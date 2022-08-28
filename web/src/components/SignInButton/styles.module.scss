@@ -1,0 +1,29 @@
+.container {
+    height: 3rem;
+    border-radius: 100px;
+    background: var(--gray-700);
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--gray-50);
+    font-weight: bold;
+
+
+    transition: filter .2s;
+
+
+    svg:first-child {
+        margin-right: 1rem;
+    }
+
+
+    &:hover {
+        filter: brightness(.8);
+    }
+
+    svg:last-child {
+        margin-left: 1rem;
+    }
+}
