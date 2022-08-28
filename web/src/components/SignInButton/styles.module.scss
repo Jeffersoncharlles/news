@@ -18,12 +18,11 @@
         margin-right: 1rem;
     }
 
-
     &:hover {
         filter: brightness(.8);
     }
 
-    svg:last-child {
+    .closed {
         margin-left: 1rem;
     }
 }
