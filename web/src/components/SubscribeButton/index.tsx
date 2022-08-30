@@ -1,4 +1,6 @@
 import { signIn, useSession } from 'next-auth/react'
+import { api } from '../../lib/axios'
+import { getStripeJs } from '../../lib/stripe-js'
 import styles from './styles.module.scss'
 
 interface Props {
@@ -8,7 +10,7 @@ interface Props {
 export const SubscribeButton = ({ priceId }: Props) => {
     const { data: session } = useSession()
 
-    const handleSubscribe = () => {
+    const handleSubscribe = async () => {
 
         if (!session) {
             signIn('google')
@@ -16,6 +18,15 @@ export const SubscribeButton = ({ priceId }: Props) => {
         }
 
         //create checkout session
+        try {
+            const { data } = await api.post('/subscribe')
+            if (data.sessionId) {
+                const stripe = await getStripeJs()
+                stripe?.redirectToCheckout({ sessionId: data.sessionId })
+            }
+        } catch (error) {
+            alert("Error subscribe")
+        }
 
     }
 
