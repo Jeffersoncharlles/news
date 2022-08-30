@@ -1,0 +1,73 @@
+import { NextApiRequest, NextApiResponse } from "next"
+import { Readable } from "stream"
+import Stripe from "stripe";
+import { stripe } from "../../lib/stripe";
+
+
+const relevantEvents = new Set([
+    'checkout.session.completed'
+])
+
+const buffer = async (readable: Readable) => {
+    const chunks = []
+
+    for await (const chunk of readable) {
+        chunks.push(
+            //se o tipo de chunk for string
+            typeof chunk === "string" ? Buffer.from(chunk) : chunk
+        );
+    }
+
+    return Buffer.concat(chunks);//incrementar tudo no array
+}
+
+export const config = {
+    api: {
+        bodyParser: false
+    }
+}
+
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+
+    if (req.method === 'POST') {
+        const buf = await buffer(req)
+        const secret = req.headers['stripe-signature'] as string
+
+        let event: Stripe.Event
+
+        try {
+            event = stripe.webhooks.constructEvent(buf, secret, process.env.STRIPE_WEBHOOK_SECRET!)
+        } catch (error: any) {
+            res.status(400).send(`WebHook error: ${error.message}`)
+        }
+
+        const { type } = event
+
+
+        if (relevantEvents.has(type)) {
+            console.log('evento recebido', event)
+
+            try {
+                switch (type) {
+                    case 'checkout.session.completed':
+
+                        break;
+                    default:
+                        throw new Error('unhandled event.')
+                }
+            } catch (error) {
+                return res.json({ error: 'webhook handler failed' })
+            }
+
+        }
+
+        res.json({ received: true })
+    } else {
+        res.setHeader('Allow', 'POST')
+        res.status(405).end('Method not allowed')
+    }
+
+
+
+
+}
