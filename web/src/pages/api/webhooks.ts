@@ -3,10 +3,14 @@ import { NextApiRequest, NextApiResponse } from "next"
 import Stripe from "stripe";
 import { stripe } from "../../lib/stripe";
 import { buffer } from "../../utils/createBuffer";
+import { saveSubscription } from "./_lib/menageSubscription";
 
 
 const relevantEvents = new Set([
-    'checkout.session.completed'
+    'checkout.session.completed',
+    // 'customer.subscription.created',
+    'customer.subscription.updated',
+    'customer.subscription.deleted'
 ])
 
 
@@ -34,13 +38,29 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         //================================= verificar o evento ===========================//
         if (relevantEvents.has(type)) {
-            console.log('evento recebido', event)
 
             try {
                 switch (type) {
-                    case 'checkout.session.completed':
+                    //=============================================================================//
+                    // case 'customer.subscription.created':
+                    case 'customer.subscription.updated':
+                    case 'customer.subscription.deleted':
+                        const subscription = event.data.object as Stripe.Subscription
+                        // const createAction = type === 'customer.subscription.created'
+
+                        await saveSubscription(subscription.id, subscription.customer.toString(), false)
 
                         break;
+                    //=============================================================================//
+                    case 'checkout.session.completed':
+                        const checkoutSession = event.data.object as Stripe.Checkout.Session
+                        const subscriptionId = checkoutSession.subscription.toString()
+                        const customerId = checkoutSession.customer.toString()
+
+                        await saveSubscription(subscriptionId, customerId, true)
+
+                        break;
+                    //=============================================================================//
                     default:
                         throw new Error('unhandled event.')
                 }
