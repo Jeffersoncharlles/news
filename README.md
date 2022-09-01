@@ -33,9 +33,12 @@ This Front-End project was developed using the following technologies:
 
 -   [Typescript][typescript]
 -   [NextJs][nextjs]
+-   [Next Auth][next-auth]
 -   [Sass][sass]
 -   [Phosphor Icons][phosphoricons]
 -   [Fauna DB][fauna]
+-   [Stripe][stripe]
+-   [Axios][axios]
 
 
 This project in under MIT license, for more details check in [LICENSE][license]. <br>
@@ -49,6 +52,7 @@ Feel free to bring new features or fix problems, it will be a pleasure! 💜
 
 [typescript]: https://www.typescriptlang.org/
 [nextjs]: https://nextjs.org/
+[next-auth]: https://next-auth.js.org/
 [vitejs]: https://vitejs.dev/
 [styled]: https://styled-components.com/
 [phosphoricons]: https://phosphoricons.com/

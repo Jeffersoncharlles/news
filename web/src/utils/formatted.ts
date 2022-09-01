@@ -13,3 +13,15 @@ export const formattedPriceBR = (price: number | null) => {
         currency: 'BRL',
     }).format(price! / 100)
 }
+
+
+export const formattedDatePtBR = (date: any) => {
+
+    return new Intl.DateTimeFormat('pt-BR', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        timeZone: 'America/Sao_Paulo',
+
+    }).format(date)
+}
