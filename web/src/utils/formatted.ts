@@ -19,9 +19,18 @@ export const formattedDatePtBR = (date: any) => {
 
     return new Intl.DateTimeFormat('pt-BR', {
         day: 'numeric',
-        month: 'short',
+        month: 'long',
         year: 'numeric',
         timeZone: 'America/Sao_Paulo',
 
     }).format(date)
+}
+
+
+export const formattedDatePtBRToLocale = (date: any) => {
+    return new Date(date).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+    })
 }
