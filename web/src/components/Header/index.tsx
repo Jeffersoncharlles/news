@@ -1,8 +1,12 @@
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { ActiveLink } from '../ActiveLink';
 import { SignInButton } from '../SignInButton';
 import styles from './styles.module.scss'
 
 export const Header = () => {
+    const { asPath } = useRouter()
 
     return (
         <header className={styles.container}>
@@ -14,8 +18,13 @@ export const Header = () => {
                     height="100"
                 />
                 <nav>
-                    <a href="" className={styles.active}>Home</a>
-                    <a href="">Posts</a>
+                    <ActiveLink active={styles.active} href="/" >
+                        <a className={styles.active}>Home</a>
+                    </ActiveLink>
+                    <ActiveLink active={styles.active} href="/posts" >
+                        <a>Posts</a>
+                    </ActiveLink>
+
                 </nav>
                 <SignInButton />
             </div>
