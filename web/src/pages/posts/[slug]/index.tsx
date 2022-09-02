@@ -12,7 +12,7 @@ interface Props {
         title: string
         content: string
         updatedAt: string
-    }
+    } | undefined
 }
 
 const posts = ({ post }: Props) => {
@@ -47,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
     const { slug } = context.params
 
 
-    console.log(session)
+    // console.log(session)
 
 
     if (!session?.activeSubscription) {
@@ -60,22 +60,35 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
     }
 
     const prismic = getPrismicClient()
-    const response = await prismic.getByUID('post', String(slug), {})
+    try {
+        const response = await prismic.getByUID('post', String(slug))
+        const post = {
+            slug,
+            title: RichText.asText(response.data.title),
+            content: RichText.asHtml(response.data.content),
+            updatedAt: formattedDatePtBRToLocale(response.last_publication_date)
+        }
 
-    const post = {
-        slug,
-        title: RichText.asText(response.data.title),
-        content: RichText.asHtml(response.data.content),
-        updatedAt: formattedDatePtBRToLocale(response.last_publication_date)
+        return {
+            props: {
+                post
+            }
+        }
+    } catch (error) {
+
+        return {
+            props: {
+
+            },
+            redirect: {
+                destination: '/notfound'
+            }
+        }
+
     }
 
 
-    return {
-        props: {
-            post
-        },
-        // redirect: {
-        //     destination
-        // }
-    }
+
+
+
 }
