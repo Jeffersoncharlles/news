@@ -28,7 +28,7 @@ yarn dev
 ```
 
 ## PREVIEW
-<a href="">News</a>
+<a href="https://news-rho-ebon.vercel.app/">News</a>
 ## 🚀 Technologies:
 
 This Front-End project was developed using the following technologies:
